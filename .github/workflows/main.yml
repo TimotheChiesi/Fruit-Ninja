@@ -1,0 +1,64 @@
+name: Build, Push, and Run Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the 'main' branch
+  pull_request:
+    types: [closed]  # Trigger when a PR is merged (closed)
+  release:
+    types: [published]  # Trigger when a new release is created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Define Docker Hub credentials as environment variables for the entire job
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_REPO: ${{ env.DOCKER_USERNAME }}/fruit-ninja
+
+    steps:
+    # Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ env.DOCKER_USERNAME }}
+        password: ${{ env.DOCKER_PASSWORD }}
+
+    # Build the Docker image
+    - name: Build Docker image
+      run: |
+        # Tag the image based on the event type (commit SHA or release tag)
+        if [[ $GITHUB_EVENT_NAME == "release" ]]; then
+          IMAGE_TAG=${GITHUB_REF#refs/tags/}  # Get the release tag (without refs/tags/)
+        elif [[ $GITHUB_EVENT_NAME == "pull_request" && $GITHUB_EVENT_ACTION == "closed" ]]; then
+          IMAGE_TAG=${GITHUB_SHA}  # Use the commit SHA for PR merges
+        else
+          IMAGE_TAG="latest"  # Default to 'latest' for other pushes
+        fi
+
+        # Build and tag the Docker image
+        docker build -t $DOCKER_REPO:$IMAGE_TAG .
+
+    # Push the Docker image to Docker Hub
+    - name: Push Docker image
+      run: |
+        # Push the Docker image
+        docker push $DOCKER_REPO:$IMAGE_TAG
+
+    # Run the Docker container to verify the app
+    - name: Run Docker container to verify the app
+      run: |
+        docker run -d -p 5000:5000 $DOCKER_REPO:$IMAGE_TAG
+        # Sleep for a few seconds to give the container time to start
+        sleep 10
+        # Test if the app is running by hitting the home page (adjust if necessary)
+        curl --fail http://localhost:5000 || exit 1
+        # Stop the container
+        docker stop $(docker ps -q)
