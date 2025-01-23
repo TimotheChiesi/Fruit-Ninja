@@ -9,7 +9,7 @@ This web application allows users to search for fruits and view their nutritiona
 - **Fruit Comparison**: Compare the nutritional value of two fruits
 
 ## Requirements
-- Python 3.7 or higher
+- Python 3.12
 - Flask
 - Requests library
 
