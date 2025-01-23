@@ -3,7 +3,7 @@ name: Build, Push, and Run Docker Image
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the 'main' branch
+      - github_ci_docker  # Trigger on pushes to the 'main' branch
   pull_request:
     types: [closed]  # Trigger when a PR is merged (closed)
   release:
