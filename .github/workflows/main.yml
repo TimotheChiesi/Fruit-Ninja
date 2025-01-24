@@ -1,0 +1,72 @@
+name: Build, Push, and Run Docker Image
+
+on:
+  push:
+    branches:
+      - main        # Trigger on pushes to the 'main' branch
+      - 'release/*' # Trigger on pushes to release branches
+      - 'feature/*' # Trigger on feature branches
+  pull_request:
+    types: [closed]  # Trigger when a PR is merged (closed)
+  release:
+    types: [published]  # Trigger when a new release is created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Define Docker Hub credentials as environment variables for the entire job
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    steps:
+    # Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+    # Determine the Docker image tag
+    - name: Set IMAGE_TAG
+      id: tag  # Create a step ID to reference its outputs later
+      run: |
+        if [[ $GITHUB_EVENT_NAME == "release" ]]; then
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV  # Use release tag
+        elif [[ $GITHUB_EVENT_NAME == "pull_request" && $GITHUB_EVENT_ACTION == "closed" ]]; then
+          echo "tag=${GITHUB_SHA}" >> $GITHUB_ENV  # Use commit SHA for PR merges
+        else
+          echo "tag=latest" >> $GITHUB_ENV  # Default to 'latest' for other pushes
+        fi
+
+    - name: Print Tag Value
+      run: |
+        echo "Tag: $tag"
+
+    # Build the Docker image
+    - name: Build Docker Image with no cache
+      run: |
+        docker build --no-cache -t $DOCKER_USERNAME/fruit-ninja:$tag .
+
+    # Push the Docker image to Docker Hub (only for main, release branches, or merged PRs)
+    - name: Push Docker image
+      if: |
+        (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))) ||
+        (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) ||
+        (github.event_name == 'release')
+      run: |
+        docker push $DOCKER_USERNAME/fruit-ninja:$tag
+
+    # Run the Docker container to verify the app
+    - name: Run Docker container to verify the app
+      run: |
+        docker run -d --name app -p 3000:5000 $DOCKER_USERNAME/fruit-ninja:$tag
+        # Sleep for a few seconds to give the container time to start
+        sleep 10
+        # Test if the app is running by hitting the home page (adjust if necessary)
+        curl --fail http://localhost:3000 || (docker logs app && exit 1)
+        # Stop the container
+        docker stop $(docker ps -q)
