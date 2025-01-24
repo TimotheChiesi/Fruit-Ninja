@@ -63,6 +63,6 @@ jobs:
         # Sleep for a few seconds to give the container time to start
         sleep 10
         # Test if the app is running by hitting the home page (adjust if necessary)
-        curl --fail http://localhost:3000 || exit 1
+        curl --fail http://localhost:3000 || (docker logs app && exit 1)
         # Stop the container
         docker stop $(docker ps -q)
