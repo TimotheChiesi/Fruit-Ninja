@@ -17,7 +17,6 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      DOCKER_REPO: ${{ env.DOCKER_USERNAME }}/fruit-ninja
 
     steps:
     # Checkout the code from the repository
@@ -42,18 +41,18 @@ jobs:
         fi
 
         # Build and tag the Docker image
-        docker build -t $DOCKER_REPO:$IMAGE_TAG .
+        docker build -t $DOCKER_USERNAME/fruit-ninja:$IMAGE_TAG .
 
     # Push the Docker image to Docker Hub
     - name: Push Docker image
       run: |
         # Push the Docker image
-        docker push $DOCKER_REPO:$IMAGE_TAG
+        docker push $DOCKER_USERNAME/fruit-ninja:$IMAGE_TAG
 
     # Run the Docker container to verify the app
     - name: Run Docker container to verify the app
       run: |
-        docker run -d -p 5000:5000 $DOCKER_REPO:$IMAGE_TAG
+        docker run -d -p 5000:5000 $DOCKER_USERNAME/fruit-ninja:$IMAGE_TAG
         # Sleep for a few seconds to give the container time to start
         sleep 10
         # Test if the app is running by hitting the home page (adjust if necessary)
