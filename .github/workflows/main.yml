@@ -34,7 +34,7 @@ jobs:
       run: |
         python -m venv venv  # Create a virtual environment
         source venv/bin/activate  # Activate the virtual environment
-        pip install flask requests unittest
+        pip install flask requests Flask-Testing
 
     - name: Run tests
       run: |
