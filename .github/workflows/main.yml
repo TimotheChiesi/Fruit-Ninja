@@ -40,6 +40,7 @@ jobs:
     - name: Run tests
       run: |
         python -m venv venv  # Create a virtual environment
+        export FLASK_APP=app
         python -m unittest discover app/tests  # Run tests with unittest
 
     # Log in to Docker Hub
