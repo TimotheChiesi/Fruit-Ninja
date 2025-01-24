@@ -28,31 +28,33 @@ jobs:
       run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
+    # Determine the Docker image tag
+    - name: Set IMAGE_TAG
+      id: tag  # Create a step ID to reference its outputs later
+      run: |
+        if [[ $GITHUB_EVENT_NAME == "release" ]]; then
+          echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV  # Use release tag
+        elif [[ $GITHUB_EVENT_NAME == "pull_request" && $GITHUB_EVENT_ACTION == "closed" ]]; then
+          echo "tag=${GITHUB_SHA}" >> $GITHUB_ENV  # Use commit SHA for PR merges
+        else
+          echo "tag=latest" >> $GITHUB_ENV  # Default to 'latest' for other pushes
+        fi
+
     # Build the Docker image
     - name: Build Docker image
       run: |
-        # Tag the image based on the event type (commit SHA or release tag)
-        if [[ $GITHUB_EVENT_NAME == "release" ]]; then
-          IMAGE_TAG=${GITHUB_REF#refs/tags/}  # Get the release tag (without refs/tags/)
-        elif [[ $GITHUB_EVENT_NAME == "pull_request" && $GITHUB_EVENT_ACTION == "closed" ]]; then
-          IMAGE_TAG=${GITHUB_SHA}  # Use the commit SHA for PR merges
-        else
-          IMAGE_TAG="latest"  # Default to 'latest' for other pushes
-        fi
-
-        # Build and tag the Docker image
-        docker build -t $DOCKER_USERNAME/fruit-ninja:$IMAGE_TAG .
+        docker build -t $DOCKER_USERNAME/fruit-ninja:$tag .
 
     # Push the Docker image to Docker Hub
     - name: Push Docker image
       run: |
         # Push the Docker image
-        docker push $DOCKER_USERNAME/fruit-ninja:$IMAGE_TAG
+        docker push $DOCKER_USERNAME/fruit-ninja:$tag
 
     # Run the Docker container to verify the app
     - name: Run Docker container to verify the app
       run: |
-        docker run -d -p 5000:5000 $DOCKER_USERNAME/fruit-ninja:$IMAGE_TAG
+        docker run -d -p 5000:5000 $DOCKER_USERNAME/fruit-ninja:$tag
         # Sleep for a few seconds to give the container time to start
         sleep 10
         # Test if the app is running by hitting the home page (adjust if necessary)
