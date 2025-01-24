@@ -42,10 +42,13 @@ jobs:
           echo "tag=latest" >> $GITHUB_ENV  # Default to 'latest' for other pushes
         fi
 
+    - name: Print Tag Value
+      run: echo "Tag: $tag"
+
     # Build the Docker image
-    - name: Build Docker image
+    - name: Build Docker Image with no cache
       run: |
-        docker build -t $DOCKER_USERNAME/fruit-ninja:$tag .
+        docker build --no-cache -t $DOCKER_USERNAME/fruit-ninja:$tag .
 
     # Push the Docker image to Docker Hub (only for main, release branches, or merged PRs)
     - name: Push Docker image
