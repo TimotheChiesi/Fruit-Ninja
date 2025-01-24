@@ -43,7 +43,8 @@ jobs:
         fi
 
     - name: Print Tag Value
-      run: echo "Tag: $tag"
+      run: |
+        echo "Tag: $tag"
 
     # Build the Docker image
     - name: Build Docker Image with no cache
