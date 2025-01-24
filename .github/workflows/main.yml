@@ -59,10 +59,10 @@ jobs:
     # Run the Docker container to verify the app
     - name: Run Docker container to verify the app
       run: |
-        docker run -d -p 5000:8080 $DOCKER_USERNAME/fruit-ninja:$tag
+        docker run -d -p 3000:5000 $DOCKER_USERNAME/fruit-ninja:$tag
         # Sleep for a few seconds to give the container time to start
         sleep 10
         # Test if the app is running by hitting the home page (adjust if necessary)
-        curl --fail http://localhost:5000 || exit 1
+        curl --fail http://localhost:3000 || exit 1
         # Stop the container
         docker stop $(docker ps -q)

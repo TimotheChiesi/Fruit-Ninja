@@ -11,11 +11,11 @@ RUN pip install --no-cache-dir flask requests gunicorn
 COPY . .
 
 # Expose port 5000 to the outside world
-EXPOSE 5000
+EXPOSE 3000
 
 # Set environment variables for Flask
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 
 # Use Gunicorn to serve the Flask app in production
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:3000", "app:app"]
