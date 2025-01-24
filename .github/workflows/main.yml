@@ -25,6 +25,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'  # Specify the Python version you want to use
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv  # Create a virtual environment
+        source venv/bin/activate  # Activate the virtual environment
+        pip install flask requests unittest
+
+    - name: Run tests
+      run: |
+        python -m unittest discover app/tests  # Run tests with unittest
+
     # Log in to Docker Hub
     - name: Log in to Docker Hub
       run: |
