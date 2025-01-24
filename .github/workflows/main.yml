@@ -39,6 +39,7 @@ jobs:
 
     - name: Run tests
       run: |
+        python -m venv venv  # Create a virtual environment
         python -m unittest discover app/tests  # Run tests with unittest
 
     # Log in to Docker Hub
