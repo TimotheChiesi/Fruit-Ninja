@@ -3,47 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fruit Nutrition Info</title>
+    <title>Fruit Ninja</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Fruit Nutrition Info</h1>
+    <h1>Fruit Nutritional Value Finder 🍎🍌</h1>
+    <a>You can search nutritional values for a fruit or compare two different fruits</a>
     <form id="fruit-form">
-        <label for="fruit">Enter a fruit name:</label>
+        <label for="fruit">Look for a fruit:</label>
         <input type="text" id="fruit" name="fruit" required>
         <button type="submit">Submit</button>
     </form>
 
     <div id="result"></div>
 
-    <script>
-        document.getElementById('fruit-form').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const fruit = document.getElementById('fruit').value;
-            const response = await fetch('/get_nutrition', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({fruit}),
-            });
-
-            const resultDiv = document.getElementById('result');
-            if (response.ok) {
-                const data = await response.json();
-                resultDiv.innerHTML = `
-                    <h2>Nutrition Information for ${data.name}</h2>
-                    <ul>
-                        <li>Calories: ${data.nutritions.calories}</li>
-                        <li>Carbohydrates: ${data.nutritions.carbohydrates}g</li>
-                        <li>Protein: ${data.nutritions.protein}g</li>
-                        <li>Fat: ${data.nutritions.fat}g</li>
-                        <li>Sugar: ${data.nutritions.sugar}g</li>
-                    </ul>`;
-            } else {
-                const errorData = await response.json();
-                resultDiv.innerHTML = `<p style="color:red;">${errorData.error}</p>`;
-            }
-        });
-    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
