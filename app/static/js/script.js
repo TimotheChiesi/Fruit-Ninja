@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear the input field on page load
+    document.getElementById('fruit').value = '';
+});
+
 document.getElementById('fruit-form').addEventListener('submit', async function(event) {
     event.preventDefault();
     const fruit = document.getElementById('fruit').value;
@@ -20,7 +25,10 @@ document.getElementById('fruit-form').addEventListener('submit', async function(
                 <li>Protein: ${data.nutritions.protein}g</li>
                 <li>Fat: ${data.nutritions.fat}g</li>
                 <li>Sugar: ${data.nutritions.sugar}g</li>
-            </ul>`;
+            </ul>
+            <h3>Fruit Image</h3>
+            <img src="${data.image_url}" alt="Image of ${data.name}" />
+        `;
     } else {
         const errorData = await response.json();
         resultDiv.innerHTML = `<p style="color:red;">${errorData.error}</p>`;
