@@ -2,10 +2,10 @@ from flask import Flask
 from app.routes import init_routes
 import os
 
-application = Flask(__name__, template_folder=os.path.join('app', 'templates'))
+app = Flask(__name__, template_folder=os.path.join('app', 'templates'), static_folder=os.path.join('app', 'static'))
 
 # Initialize routes
-init_routes(application)
+init_routes(app)
 
 if __name__ == '__main__':
-    application.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True)
