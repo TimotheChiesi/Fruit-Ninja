@@ -101,3 +101,43 @@ img {
         width: 90%;
     }
 }
+
+/* Container for the comparison boxes */
+.comparison-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow boxes to wrap if there's not enough space */
+    justify-content: center; /* Center boxes when there's one or more */
+    gap: 20px; /* Add space between the boxes */
+    margin-top: 20px;
+}
+
+/* Individual fruit result box */
+.fruit-result {
+    border: 1px solid #ccc;
+    padding: 20px; /* Increase padding for better spacing */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    width: 250px; /* Fixed width to make all boxes uniform */
+    height: 300px; /* Adjust height to fit images and text */
+    background-color: #f9f9f9;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-align: center;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+/* Fruit image inside the result box */
+.fruit-result img {
+    max-width: 150px; /* Ensure the image fits inside the box */
+    max-height: 150px; /* Limit image height */
+    margin-bottom: 15px; /* Add space below the image */
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+    .fruit-result {
+        width: 90%; /* Make boxes full-width on small screens */
+    }
+}
