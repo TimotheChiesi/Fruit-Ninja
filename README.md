@@ -8,6 +8,9 @@ This web application allows users to search for fruits and view their nutritiona
 - **Simple UI**: User-friendly interface for quick and easy searches.
 - **Fruit Comparison**: Compare the nutritional value of two fruits
 
+## Project Setup
+Create a ```.env``` file and fill it with the Pexels API Key.
+
 ## Requirements
 - Python 3.12
 - Flask
@@ -15,3 +18,4 @@ This web application allows users to search for fruits and view their nutritiona
 
 ## External API
 This project uses the [Fruityvice API](https://www.fruityvice.com/) to fetch nutritional data for fruits. The Fruityvice API is free to use and provides detailed nutritional information, including calories, carbohydrates, proteins, and more.
+It also uses the [Pexels Apis](https://www.pexels.com/) to get fruit images.

@@ -4,17 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fruit Ninja</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <h1>Fruit Nutritional Value Finder 🍎🍌</h1>
     <a>You can search nutritional values for a fruit or compare two different fruits</a>
+
+    <!-- Fruit Form -->
     <form id="fruit-form">
-        <label for="fruit">Look for a fruit:</label>
-        <input type="text" id="fruit" name="fruit" required>
+        <div id="fruit-fields" class="fruit-fields">
+            <div class="fruit-group">
+                <label for="fruit">Look for a fruit:</label>
+                <input type="text" class="fruit-input" name="fruit" required>
+                <button type="button" class="remove-fruit-btn">➖</button>
+            </div>
+        </div>
+        <button type="button" id="add-fruit-btn">➕ Add another fruit</button>
         <button type="submit">Submit</button>
     </form>
 
+    <!-- Result Display -->
     <div id="result"></div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
