@@ -1,76 +1,91 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const fruitForm = document.getElementById('fruit-form');
-    const fruitFields = document.getElementById('fruit-fields');
     const addFruitBtn = document.getElementById('add-fruit-btn');
+    const removeFruitBtn = document.getElementById('remove-fruit-btn');
+    const fruit2Group = document.getElementById('fruit2-group');
+    const fruitForm = document.getElementById('fruit-form');
+    const resultDiv = document.getElementById('result');
 
-    // Add another fruit input field dynamically
-    addFruitBtn.addEventListener('click', () => {
-        const fruitGroup = document.createElement('div');
-        fruitGroup.classList.add('fruit-group');
-        fruitGroup.innerHTML = `
-            <label for="fruit">Look for another fruit:</label>
-            <input type="text" class="fruit-input" name="fruit" required>
-            <button type="button" class="remove-fruit-btn">➖</button>
-        `;
-        fruitFields.appendChild(fruitGroup);
+    if (!addFruitBtn || !removeFruitBtn || !fruit2Group || !fruitForm || !resultDiv) {
+        console.error('One or more elements are not found in the DOM.');
+        return;
+    }
 
-        // Attach event listener to the new remove button
-        const removeBtn = fruitGroup.querySelector('.remove-fruit-btn');
-        removeBtn.addEventListener('click', () => {
-            fruitGroup.remove();
-        });
+    addFruitBtn.addEventListener('click', function() {
+        fruit2Group.style.display = 'block';
+        addFruitBtn.style.display = 'none';
     });
 
-    // Remove fruit input field
-    fruitFields.addEventListener('click', function(event) {
-        if (event.target.classList.contains('remove-fruit-btn')) {
-            const fruitGroup = event.target.parentElement;
-            fruitGroup.remove();
-        }
+    removeFruitBtn.addEventListener('click', function() {
+        fruit2Group.style.display = 'none';
+        addFruitBtn.style.display = 'inline-block';
+        document.getElementById('fruit2').value = ''; // Clear the second fruit input field
     });
 
-    // Submit the form and handle multiple fruits
     fruitForm.addEventListener('submit', async function(event) {
         event.preventDefault();
-        const fruitInputs = document.querySelectorAll('.fruit-input');
-        const fruits = Array.from(fruitInputs).map(input => input.value);
 
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = ''; // Clear previous results
+        const fruit1 = document.getElementById('fruit1').value;
+        const fruit2 = document.getElementById('fruit2').value;
 
-        for (const fruit of fruits) {
-            try {
-                const response = await fetch('/get_nutrition', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({ fruit }),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const nutritionInfo = `
-                        <div class="fruit-result">
-                            <h2>${data.name}</h2>
-                            <ul>
-                                <li>Calories: ${data.nutritions.calories}</li>
-                                <li>Carbohydrates: ${data.nutritions.carbohydrates}g</li>
-                                <li>Protein: ${data.nutritions.protein}g</li>
-                                <li>Fat: ${data.nutritions.fat}g</li>
-                                <li>Sugar: ${data.nutritions.sugar}g</li>
-                            </ul>
-                            <img src="${data.image_url}" alt="Image of ${data.name}" />
-                        </div>
-                    `;
-                    resultDiv.innerHTML += nutritionInfo;
-                } else {
-                    const errorData = await response.json();
-                    resultDiv.innerHTML += `<p style="color:red;">Error for ${fruit}: ${errorData.error}</p>`;
-                }
-            } catch (error) {
-                resultDiv.innerHTML += `<p style="color:red;">An error occurred for ${fruit}.</p>`;
+        try {
+            const response1 = await fetch(`/api/fruit?name=${fruit1}`);
+            if (!response1.ok) {
+                throw new Error(`Error fetching data for ${fruit1}: ${response1.statusText}`);
             }
+            const data1 = await response1.json();
+
+            resultDiv.innerHTML = formatFruitData(fruit1, data1);
+
+            if (fruit2) {
+                const response2 = await fetch(`/api/fruit?name=${fruit2}`);
+                if (!response2.ok) {
+                    throw new Error(`Error fetching data for ${fruit2}: ${response2.statusText}`);
+                }
+                const data2 = await response2.json();
+
+                resultDiv.innerHTML += formatFruitData(fruit2, data2, data1);
+            }
+        } catch (error) {
+            console.error(error);
+            resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
         }
     });
+
+    function formatFruitData(fruitName, data, compareData = null) {
+        const nutritionDiff = compareData ? calculateDifference(data.nutritions, compareData.nutritions) : {};
+
+        return `
+            <div class="fruit-result">
+                <h2>${fruitName}</h2>
+                <p><strong>Family:</strong> ${data.family}</p>
+                <p><strong>Genus:</strong> ${data.genus}</p>
+                <p><strong>Order:</strong> ${data.order}</p>
+                <h3>Nutritions:</h3>
+                <p><strong>Calories:</strong> ${data.nutritions.calories} <span style="color: ${nutritionDiff.caloriesColor || 'black'}">${nutritionDiff.calories || ''}</span></p>
+                <p><strong>Carbohydrates:</strong> ${data.nutritions.carbohydrates} <span style="color: ${nutritionDiff.carbohydratesColor || 'black'}">${nutritionDiff.carbohydrates || ''}</span></p>
+                <p><strong>Fat:</strong> ${data.nutritions.fat} <span style="color: ${nutritionDiff.fatColor || 'black'}">${nutritionDiff.fat || ''}</span></p>
+                <p><strong>Protein:</strong> ${data.nutritions.protein} <span style="color: ${nutritionDiff.proteinColor || 'black'}">${nutritionDiff.protein || ''}</span></p>
+                <p><strong>Sugar:</strong> ${data.nutritions.sugar} <span style="color: ${nutritionDiff.sugarColor || 'black'}">${nutritionDiff.sugar || ''}</span></p>
+                <img src="${data.image_url}" alt="${fruitName}" class="fruit-image">
+            </div>
+        `;
+    }
+
+    function calculateDifference(nutritions1, nutritions2) {
+        const diff = {};
+        for (const key in nutritions1) {
+            if (nutritions1.hasOwnProperty(key) && nutritions2.hasOwnProperty(key)) {
+                const difference = (nutritions1[key] - nutritions2[key]).toFixed(1);
+                diff[key] = difference > 0 ? `(+${difference})` : `(${difference})`;
+
+                // Determine color based on whether the difference is good or bad
+                if (key === 'fat' || key === 'sugar' || key === 'calories') {
+                    diff[`${key}Color`] = difference > 0 ? 'red' : 'green'; // Less is better
+                } else {
+                    diff[`${key}Color`] = difference < 0 ? 'red' : 'green'; // More is better
+                }
+            }
+        }
+        return diff;
+    }
 });
