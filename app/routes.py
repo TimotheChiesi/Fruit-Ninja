@@ -20,11 +20,12 @@ def init_routes(app):
             response.raise_for_status()
             data = response.json()
 
-            # Get the fruit image URL from the Pexels API
-            image_url = get_fruit_image(fruit_name)
+            if response.status_code == 200:
+                # Get the fruit image URL from the Pexels API
+                image_url = get_fruit_image(fruit_name)
 
-            # Add the image URL to the response data
-            data['image_url'] = image_url
+                # Add the image URL to the response data
+                data['image_url'] = image_url
             
             return jsonify(data), response.status_code
         except requests.exceptions.HTTPError as e:
