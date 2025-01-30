@@ -7,14 +7,11 @@ This web application allows users to search for fruits and view their nutritiona
 - **Fruit Comparison**: Compare the nutritional value of two fruits
 
 ## Project Setup
-Create a `.env` file and fill it with the Pexels API Key. Save the variable: `PEXELS_API_KEY=`.
 
-## Requirements
+### Requirements
 - Python 3.12
-- Flask
-- Requests library
 
-## Installation
+### Installation
 1. Clone the repository:
     ```sh
     git clone https://github.com/TimotheChiesi/Fruit-Ninja.git
