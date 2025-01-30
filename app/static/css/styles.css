@@ -52,92 +52,36 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-button:hover {
-    background-color: #8b0000; /* Darker red on hover */
+    margin-left: 10px; /* Add space between buttons */
 }
 
 /* Result Styles */
 #result {
-    margin-top: 30px; /* Add space between the result box and the form */
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    width: 50%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-li {
-    font-size: 1.1em;
-    margin-bottom: 5px;
-}
-
-p {
-    font-size: 1.2em;
-}
-
-#result {
-    text-align: center;
-}
-
-img {
-    max-width: 50%;
-    height: auto;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    #result {
-        width: 90%;
-    }
-}
-
-/* Container for the comparison boxes */
-.comparison-container {
     display: flex;
-    flex-wrap: wrap; /* Allow boxes to wrap if there's not enough space */
-    justify-content: center; /* Center boxes when there's one or more */
-    gap: 20px; /* Add space between the boxes */
-    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
 }
 
-/* Individual fruit result box */
 .fruit-result {
     border: 1px solid #ccc;
-    padding: 20px; /* Increase padding for better spacing */
+    border-radius: 5px;
+    padding: 20px;
+    margin: 20px 0;
+    background-color: #fff;
+    text-align: center; /* Center text */
+    min-width: 300px;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center content vertically */
     align-items: center; /* Center content horizontally */
-    width: 250px; /* Fixed width to make all boxes uniform */
-    height: 300px; /* Adjust height to fit images and text */
-    background-color: #f9f9f9;
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    text-align: center;
-    overflow: hidden; /* Prevent content overflow */
 }
 
-/* Fruit image inside the result box */
+.fruit-result h2 {
+    color: #b22222;
+}
+
 .fruit-result img {
-    max-width: 150px; /* Ensure the image fits inside the box */
-    max-height: 150px; /* Limit image height */
-    margin-bottom: 15px; /* Add space below the image */
-}
-
-/* Responsive behavior */
-@media (max-width: 768px) {
-    .fruit-result {
-        width: 90%; /* Make boxes full-width on small screens */
-    }
+    max-width: 100px;
+    margin-top: 10px; /* Add space above the image */
 }

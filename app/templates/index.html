@@ -13,14 +13,16 @@
 
     <!-- Fruit Form -->
     <form id="fruit-form">
-        <div id="fruit-fields" class="fruit-fields">
-            <div class="fruit-group">
-                <label for="fruit">Look for a fruit:</label>
-                <input type="text" class="fruit-input" name="fruit" required>
-                <button type="button" class="remove-fruit-btn">➖</button>
-            </div>
+        <div class="fruit-group">
+            <label for="fruit1">Fruit 1:</label>
+            <input type="text" id="fruit1" name="fruit1" required>
+            <button type="button" id="add-fruit-btn">+</button>
         </div>
-        <button type="button" id="add-fruit-btn">➕ Add another fruit</button>
+        <div class="fruit-group" id="fruit2-group" style="display: none;">
+            <label for="fruit2">Fruit 2:</label>
+            <input type="text" id="fruit2" name="fruit2">
+            <button type="button" id="remove-fruit-btn">-</button>
+        </div>
         <button type="submit">Submit</button>
     </form>
 
